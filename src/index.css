@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neon-blue: #00f2ff;
+  --color-neon-gold: #ffcc00;
+  --color-dark-bg: #000000;
+  --color-glass: rgba(255, 255, 255, 0.05);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-dark-bg text-white font-sans antialiased overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-glass backdrop-blur-xl border border-glass-border;
+  }
+  .glass-hover {
+    @apply hover:bg-white/10 transition-all duration-300;
+  }
+  .neon-glow-blue {
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+  }
+  .neon-glow-gold {
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+  }
+  .text-glow-blue {
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+  }
+  .text-glow-gold {
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+  }
+
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Light Theme Overrides */
+  .light-theme {
+    --color-dark-bg: #f8fafc;
+    --color-glass: rgba(255, 255, 255, 0.9);
+    --color-glass-border: rgba(0, 0, 0, 0.1);
+  }
+  
+  .light-theme body {
+    @apply !bg-slate-50 !text-slate-900;
+  }
+
+  .light-theme .glass {
+    @apply !bg-white !border-slate-200 !shadow-xl !shadow-slate-200/50;
+    backdrop-filter: blur(10px);
+  }
+
+  .light-theme .text-glow-blue {
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+    @apply !text-slate-900;
+  }
+
+  .light-theme .text-white {
+    @apply !text-slate-900;
+  }
+
+  .light-theme .text-neon-blue {
+    @apply !text-cyan-600;
+  }
+
+  .light-theme .text-neon-gold {
+    @apply !text-amber-600;
+  }
+
+  .light-theme .text-white\/60 {
+    @apply !text-slate-600;
+  }
+
+  .light-theme .text-white\/40 {
+    @apply !text-slate-500;
+  }
+
+  .light-theme .text-white\/20 {
+    @apply !text-slate-400;
+  }
+
+  .light-theme .text-white\/10 {
+    @apply !text-slate-300;
+  }
+
+  .light-theme .bg-white\/5 {
+    @apply !bg-slate-100;
+  }
+
+  .light-theme .border-white\/10 {
+    @apply !border-slate-200;
+  }
+
+  .light-theme .border-white\/5 {
+    @apply !border-slate-100;
+  }
+
+  .light-theme input, .light-theme select, .light-theme textarea {
+    @apply !bg-white !border-slate-200 !text-slate-900 placeholder:!text-slate-400;
+  }
+
+  .light-theme .bg-dark-bg {
+    @apply !bg-slate-50;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

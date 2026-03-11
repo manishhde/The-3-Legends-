@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: tasks
+    // Fields: title, description, priority, status, deadline, progress, teamMembers, files, userId, createdAt
+    //
+    // Collection: payments
+    // Fields: clientName, amount, status, date, userId
+    //
+    // Collection: users
+    // Fields: fullName, dob, email, photoUrl
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserId() {
+      return isAuthenticated() ? request.auth.uid : 'guest_user';
+    }
+
+    function isOwner(userId) {
+      return (isAuthenticated() && request.auth.uid == userId) || userId == 'guest_user';
+    }
+
+    function isDocOwner() {
+      return (isAuthenticated() && request.auth.uid == resource.data.userId) || resource.data.userId == 'guest_user';
+    }
+
+    function isValidProjectTask(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.status in ['Pending', 'In Progress', 'Completed'] &&
+             data.priority in ['Low', 'Medium', 'High'] &&
+             data.userId == getUserId();
+    }
+
+    function isValidPayment(data) {
+      return data.clientName is string && data.clientName.size() > 0 &&
+             data.amount is number && data.amount >= 0 &&
+             data.status in ['Pending', 'Paid'] &&
+             data.userId == getUserId();
+    }
+
+    function isValidUser(data) {
+      return data.email is string && data.email.size() > 0;
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isDocOwner();
+      allow create: if isAuthenticated() && isValidProjectTask(request.resource.data);
+      allow update: if isDocOwner() && isValidProjectTask(request.resource.data);
+      allow delete: if isDocOwner();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isDocOwner();
+      allow create: if isAuthenticated() && isValidPayment(request.resource.data);
+      allow update: if isDocOwner() && isValidPayment(request.resource.data);
+      allow delete: if isDocOwner();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+  }
+}
